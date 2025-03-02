@@ -1,4 +1,4 @@
-function mouse_test_gui()
+function schematic_editor_gui()
     % Create a larger figure window for the schematic editor.
     fig = figure('Position', [100 100 800 600], 'Name', 'Schematic Editor', 'NumberTitle', 'off');
 
@@ -7,7 +7,9 @@ function mouse_test_gui()
     ax = axes('Parent', plotPanel);
     hold(ax, 'on');
     axis(ax, [0 10 0 10]);
-
+    axis equal;          % Ensure equal scaling so that circles look round.
+    grid(ax, 'on');      % Display grid lines.
+    
     % Initialize dynamic crosshair lines.
     xl = get(ax, 'XLim');
     yl = get(ax, 'YLim');
@@ -16,7 +18,7 @@ function mouse_test_gui()
 
     % Set up shared data: current mode and preview handle.
     fig.UserData.ax = ax;
-    fig.UserData.mode = 'cursor';  % default mode is simply the crosshair
+    fig.UserData.mode = 'cursor';  % Default mode is the normal crosshair.
     fig.UserData.preview = [];
 
     % Establish callbacks for mouse interactions.
@@ -61,8 +63,8 @@ function mouse_test_gui()
     % Mouse click callback: finalize the placement of a schematic component.
     function ax_click(~, ~)
         pt = get(ax, 'CurrentPoint');
-        x = pt(1,1);
-        y = pt(1,2);
+        x = round(pt(1,1));  % Snap to grid at 1 unit intervals.
+        y = round(pt(1,2));
         xl = get(ax, 'XLim');
         yl = get(ax, 'YLim');
         if x < xl(1) || x > xl(2) || y < yl(1) || y > yl(2)
@@ -77,31 +79,29 @@ function mouse_test_gui()
                 rectangle('Parent', ax, 'Position', [x-r, y-r, 2*r, 2*r], 'Curvature', [1,1], ...
                           'EdgeColor', 'r', 'LineWidth', 2);
             case 'resistor'
-                % Finalize an American-style resistor (zigzag).
+                % Finalize an American-style resistor (zigzag) with 3 cycles.
                 w = 1; 
                 h = 0.5;
-                leadLen = 0.1 * w;  % lead length as 10% of resistor width
+                leadLen = 0.1 * w;  % Lead length as 10% of resistor width.
                 xLeft = x - w/2; 
                 xRight = x + w/2;
-                xLZ = xLeft + leadLen;  % start of zigzag
-                xRZ = xRight - leadLen; % end of zigzag
-                nZig = 5;             % number of zigzag vertices (producing 4 segments)
+                xLZ = xLeft + leadLen;  % Start of the zigzag.
+                xRZ = xRight - leadLen; % End of the zigzag.
+                nZig = 7;             % 7 vertices produce 3 full cycles (3 peaks and 3 troughs).
                 step = (xRZ - xLZ) / (nZig - 1);
                 zigX = zeros(1, nZig);
                 zigY = zeros(1, nZig);
                 for i = 1:nZig
                     zigX(i) = xLZ + (i-1)*step;
-                    % Alternate vertical displacement for zigzag pattern.
-                    if mod(i,2) == 0
+                    if mod(i,2)==0
                         zigY(i) = y + h/2;
                     else
                         zigY(i) = y - h/2;
                     end
                 end
-                % Ensure endpoints of the zigzag align with the central horizontal line.
                 zigY(1) = y;
                 zigY(end) = y;
-                % Combine points: left lead, zigzag, then right lead.
+                % Combine the left lead, zigzag, and right lead.
                 finalX = [xLeft, xLZ, zigX, xRZ, xRight];
                 finalY = [y, y, zigY, y, y];
                 plot(ax, finalX, finalY, 'b', 'LineWidth', 2);
@@ -113,8 +113,8 @@ function mouse_test_gui()
     % Mouse move callback: update crosshair and component preview.
     function mouse_move(~, ~)
         pt = get(ax, 'CurrentPoint');
-        x = pt(1,1);
-        y = pt(1,2);
+        x = round(pt(1,1));  % Snap cursor position to grid.
+        y = round(pt(1,2));
         xl = get(ax, 'XLim');
         yl = get(ax, 'YLim');
         if x < xl(1) || x > xl(2) || y < yl(1) || y > yl(2)
@@ -126,7 +126,7 @@ function mouse_test_gui()
             set(h_crosshair, 'XData', xl, 'YData', [y y], 'Visible', 'on');
             mode = fig.UserData.mode;
             if strcmp(mode, 'voltage')
-                % Create/update voltage source preview: a dashed red circle.
+                % Update voltage source preview: a dashed red circle.
                 r = 0.5;
                 if isempty(fig.UserData.preview) || ~isvalid(fig.UserData.preview)
                     fig.UserData.preview = rectangle('Parent', ax, 'Position', [x-r, y-r, 2*r, 2*r], ...
@@ -135,7 +135,7 @@ function mouse_test_gui()
                     set(fig.UserData.preview, 'Position', [x-r, y-r, 2*r, 2*r], 'Visible', 'on');
                 end
             elseif strcmp(mode, 'resistor')
-                % Create/update resistor preview: a dashed blue zigzag line.
+                % Update resistor preview: a dashed blue zigzag line with 3 cycles.
                 w = 1; 
                 h = 0.5;
                 leadLen = 0.1 * w;
@@ -143,7 +143,7 @@ function mouse_test_gui()
                 xRight = x + w/2;
                 xLZ = xLeft + leadLen;
                 xRZ = xRight - leadLen;
-                nZig = 5;
+                nZig = 7;
                 step = (xRZ - xLZ) / (nZig - 1);
                 zigX = zeros(1, nZig);
                 zigY = zeros(1, nZig);
