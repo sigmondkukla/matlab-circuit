@@ -1,4 +1,4 @@
-function schematic_editor_gui()
+function mouse_test_gui()
     % Create a larger figure window for the schematic editor.
     fig = figure('Position', [100 100 800 600], 'Name', 'Schematic Editor', 'NumberTitle', 'off');
 
@@ -77,9 +77,34 @@ function schematic_editor_gui()
                 rectangle('Parent', ax, 'Position', [x-r, y-r, 2*r, 2*r], 'Curvature', [1,1], ...
                           'EdgeColor', 'r', 'LineWidth', 2);
             case 'resistor'
-                % Finalize a resistor as a blue rectangle.
-                w = 1; h = 0.5;
-                rectangle('Parent', ax, 'Position', [x - w/2, y - h/2, w, h], 'EdgeColor', 'b', 'LineWidth', 2);
+                % Finalize an American-style resistor (zigzag).
+                w = 1; 
+                h = 0.5;
+                leadLen = 0.1 * w;  % lead length as 10% of resistor width
+                xLeft = x - w/2; 
+                xRight = x + w/2;
+                xLZ = xLeft + leadLen;  % start of zigzag
+                xRZ = xRight - leadLen; % end of zigzag
+                nZig = 5;             % number of zigzag vertices (producing 4 segments)
+                step = (xRZ - xLZ) / (nZig - 1);
+                zigX = zeros(1, nZig);
+                zigY = zeros(1, nZig);
+                for i = 1:nZig
+                    zigX(i) = xLZ + (i-1)*step;
+                    % Alternate vertical displacement for zigzag pattern.
+                    if mod(i,2) == 0
+                        zigY(i) = y + h/2;
+                    else
+                        zigY(i) = y - h/2;
+                    end
+                end
+                % Ensure endpoints of the zigzag align with the central horizontal line.
+                zigY(1) = y;
+                zigY(end) = y;
+                % Combine points: left lead, zigzag, then right lead.
+                finalX = [xLeft, xLZ, zigX, xRZ, xRight];
+                finalY = [y, y, zigY, y, y];
+                plot(ax, finalX, finalY, 'b', 'LineWidth', 2);
             otherwise
                 % In 'cursor' mode, no component is placed.
         end
@@ -110,13 +135,34 @@ function schematic_editor_gui()
                     set(fig.UserData.preview, 'Position', [x-r, y-r, 2*r, 2*r], 'Visible', 'on');
                 end
             elseif strcmp(mode, 'resistor')
-                % Create/update resistor preview: a dashed blue rectangle.
-                w = 1; h = 0.5;
+                % Create/update resistor preview: a dashed blue zigzag line.
+                w = 1; 
+                h = 0.5;
+                leadLen = 0.1 * w;
+                xLeft = x - w/2;
+                xRight = x + w/2;
+                xLZ = xLeft + leadLen;
+                xRZ = xRight - leadLen;
+                nZig = 5;
+                step = (xRZ - xLZ) / (nZig - 1);
+                zigX = zeros(1, nZig);
+                zigY = zeros(1, nZig);
+                for i = 1:nZig
+                    zigX(i) = xLZ + (i-1)*step;
+                    if mod(i,2)==0
+                        zigY(i) = y + h/2;
+                    else
+                        zigY(i) = y - h/2;
+                    end
+                end
+                zigY(1) = y;
+                zigY(end) = y;
+                previewX = [xLeft, xLZ, zigX, xRZ, xRight];
+                previewY = [y, y, zigY, y, y];
                 if isempty(fig.UserData.preview) || ~isvalid(fig.UserData.preview)
-                    fig.UserData.preview = rectangle('Parent', ax, 'Position', [x-w/2, y-h/2, w, h], ...
-                                                     'EdgeColor', 'b', 'LineStyle', '--');
+                    fig.UserData.preview = plot(ax, previewX, previewY, 'b--', 'LineWidth', 2);
                 else
-                    set(fig.UserData.preview, 'Position', [x-w/2, y-h/2, w, h], 'Visible', 'on');
+                    set(fig.UserData.preview, 'XData', previewX, 'YData', previewY, 'Visible', 'on');
                 end
             else
                 % In cursor mode, ensure no preview is displayed.
