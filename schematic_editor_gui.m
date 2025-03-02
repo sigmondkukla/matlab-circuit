@@ -6,10 +6,14 @@ function schematic_editor_gui()
     plotPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.25 0.9 0.7]);
     ax = axes('Parent', plotPanel);
     hold(ax, 'on');
-    axis(ax, [0 10 0 10]);
-    axis equal;          % Ensure equal scaling so that circles look round.
-    grid(ax, 'on');      % Display grid lines.
     
+    % Set fixed axes limits and grid properties.
+    axis(ax, [0 10 0 10]);           % Fix the axes limits.
+    axis equal;                     % Ensure equal scaling so circles appear round.
+    axis manual;                    % Prevent the axes from auto-adjusting.
+    set(ax, 'XTick', 0:1:10, 'YTick', 0:1:10);  % Set tick marks at every integer.
+    grid(ax, 'on');                 % Display grid lines.
+
     % Initialize dynamic crosshair lines.
     xl = get(ax, 'XLim');
     yl = get(ax, 'YLim');
@@ -63,7 +67,7 @@ function schematic_editor_gui()
     % Mouse click callback: finalize the placement of a schematic component.
     function ax_click(~, ~)
         pt = get(ax, 'CurrentPoint');
-        x = round(pt(1,1));  % Snap to grid at 1 unit intervals.
+        x = round(pt(1,1));  % Snap to grid at 1-unit intervals.
         y = round(pt(1,2));
         xl = get(ax, 'XLim');
         yl = get(ax, 'YLim');
@@ -87,13 +91,13 @@ function schematic_editor_gui()
                 xRight = x + w/2;
                 xLZ = xLeft + leadLen;  % Start of the zigzag.
                 xRZ = xRight - leadLen; % End of the zigzag.
-                nZig = 7;             % 7 vertices produce 3 full cycles (3 peaks and 3 troughs).
+                nZig = 7;             % 7 vertices yield 3 full cycles (3 peaks and 3 troughs).
                 step = (xRZ - xLZ) / (nZig - 1);
                 zigX = zeros(1, nZig);
                 zigY = zeros(1, nZig);
                 for i = 1:nZig
                     zigX(i) = xLZ + (i-1)*step;
-                    if mod(i,2)==0
+                    if mod(i,2) == 0
                         zigY(i) = y + h/2;
                     else
                         zigY(i) = y - h/2;
@@ -101,7 +105,7 @@ function schematic_editor_gui()
                 end
                 zigY(1) = y;
                 zigY(end) = y;
-                % Combine the left lead, zigzag, and right lead.
+                % Combine left lead, zigzag, and right lead.
                 finalX = [xLeft, xLZ, zigX, xRZ, xRight];
                 finalY = [y, y, zigY, y, y];
                 plot(ax, finalX, finalY, 'b', 'LineWidth', 2);
@@ -149,7 +153,7 @@ function schematic_editor_gui()
                 zigY = zeros(1, nZig);
                 for i = 1:nZig
                     zigX(i) = xLZ + (i-1)*step;
-                    if mod(i,2)==0
+                    if mod(i,2) == 0
                         zigY(i) = y + h/2;
                     else
                         zigY(i) = y - h/2;
