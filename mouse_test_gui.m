@@ -7,6 +7,10 @@ function mouse_test_gui()
     ax = axes('Parent', plotPanel); % axes for the plot
     hold(ax, 'on');
     axis(ax, [0 10 0 10]);
+    axis square;
+    grid on;
+    set(ax, 'XTick', 0:1:10);
+    set(ax, 'YTick', 0:1:10);
 
     % crosshair lines from before
     xl = get(ax, 'XLim');
@@ -42,6 +46,7 @@ function mouse_test_gui()
         pt = get(ax, 'CurrentPoint');
         x = pt(1,1);
         y = pt(1,2);
+        [x, y] = snap_to_grid(x, y);
 
         % check its within limits
         xl = get(ax, 'XLim');
@@ -61,6 +66,7 @@ function mouse_test_gui()
         pt = get(ax, 'CurrentPoint');
         x = pt(1,1);
         y = pt(1,2);
+        [x, y] = snap_to_grid(x, y);
 
         xl = get(ax, 'XLim');
         yl = get(ax, 'YLim');
