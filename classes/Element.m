@@ -1,10 +1,11 @@
 classdef Element < handle
     properties
-        Position    % [x, y]
+        Position % [x, y]
+        PinPositions % Vector of vectors of pin positions [[x1,y1],[x2,y2],...]
         Orientation % string enum 'right', 'down', 'left', or 'up'
-        Value       % eg voltage, resistance
-        Handles     % array of graphics handles
-        Type        % string type of element
+        Value % eg voltage, resistance
+        Handles % array of graphics handles
+        Type % string type of element
     end
     
     methods
