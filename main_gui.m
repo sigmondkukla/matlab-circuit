@@ -1,4 +1,4 @@
-function mouse_test_gui()
+function main_gui()
     fig = figure('Position', [100 100 800 600]); % figure window must be larger
 
     fig.UserData.mode = 'cursor';
