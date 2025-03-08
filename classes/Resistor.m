@@ -25,13 +25,13 @@ classdef Resistor < Element
                 if strcmp(obj.Orientation, 'right') % right customizations
                     x1_start = x - w/2 - conn_len; x1_end = x - w/2;
                     x2_start = x + w/2;            x2_end = x + w/2 + conn_len;
-                    obj.PinPositions = [[x1_start, y], [x2_end, y]];
+                    obj.PinPositions = [[x1_start, y]; [x2_end, y]];
                     hConn1 = line(ax, [x1_start, x1_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x2_start, x2_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 else % orientation 'left'
                     x1_start = x + w/2 + conn_len; x1_end = x + w/2;
                     x2_start = x - w/2;            x2_end = x - w/2 - conn_len;
-                    obj.PinPositions = [[x1_start, y], [x2_end, y]];
+                    obj.PinPositions = [[x1_start, y]; [x2_end, y]];
                     hConn1 = line(ax, [x1_start, x1_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x2_start, x2_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 end
@@ -42,13 +42,13 @@ classdef Resistor < Element
                 if strcmp(obj.Orientation, 'up')
                     y1_start = y - h/2 - conn_len; y1_end = y - h/2;
                     y2_start = y + h/2;            y2_end = y + h/2 + conn_len;
-                    obj.PinPositions = [[x, y1_start], [x, y2_end]];
+                    obj.PinPositions = [[x, y1_start]; [x, y2_end]];
                     hConn1 = line(ax, [x, x], [y1_start, y1_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x, x], [y2_start, y2_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 else % orientation 'down'
                     y1_start = y + h/2 + conn_len; y1_end = y + h/2;
                     y2_start = y - h/2;            y2_end = y - h/2 - conn_len;
-                    obj.PinPositions = [[x, y1_start], [x, y2_end]];
+                    obj.PinPositions = [[x, y1_start]; [x, y2_end]];
                     hConn1 = line(ax, [x, x], [y1_start, y1_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x, x], [y2_start, y2_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 end
