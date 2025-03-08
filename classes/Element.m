@@ -25,7 +25,6 @@ classdef Element < handle
         end
 
         function undraw(obj, ~)
-            disp(obj.Handles)
             delete(obj.Handles);
         end
     end

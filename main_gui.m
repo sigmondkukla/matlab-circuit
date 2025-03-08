@@ -13,7 +13,7 @@ function main_gui()
 
     ax = axes('Parent', plotPanel); % axes for the plot
     hold(ax, 'on');
-    axis(ax, [0 10 0 10]);
+    axis(ax, [0 10 0 10]); % 10x10 unit grid square
     axis square;
     grid on;
     set(ax, 'XTick', 0:1:10);
@@ -65,6 +65,10 @@ function main_gui()
     % wire button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Wire', ...
         'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', {@set_mode,'wire'});
+
+    % analyze button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Analyze', ...
+        'Units', 'normalized', 'Position', [0.9 0 0.1 1], 'Callback', @analyze);
 
     % on mouse click on graph, neesd to handle all user intents
     function ax_click(~, ~)
@@ -148,15 +152,22 @@ function main_gui()
 
     % edit the current rotation based on dir
     function change_rotation(~, ~, dir) % support 'cw' or 'ccw' rotation now
-        rotations = ['right','down','left','up'];
-        index = find(fig.UserData.rotation);
-        switch dir
+        rotations = {'right', 'down', 'left', 'up'}; % options
+        index = find(strcmp(fig.UserData.rotation, rotations)); % figure out where in options we are rn
+
+        switch dir % next rotation is cw, prev is ccw
             case 'cw'
-                index = mod(index, 4) + 1;
+                index = mod(index, 4) + 1; % wrapping increment
+                % illustrate: index = 4 ("up")
+                % then mod(index,4) = 0
+                % and mod(index, 4)+1 = 1, ("right")
             case 'ccw'
-                index = mod(index - 2, 4) + 1;
+                index = mod(index - 2, 4) + 1; % wrapping decrement
+                % illustrate: index = 1 ("right")
+                % then mod(index-2,4) = mod(-1,4) = 3
+                % and mod(index-2,4)+1 = 4, ("up")
         end
-        fig.UserData.rotation = rotations(index);
+        fig.UserData.rotation = rotations{index};
     end
 
     % delete everything off the schematic
@@ -165,5 +176,9 @@ function main_gui()
             fig.UserData.elements{i}.undraw(); % remove from plot
         end
         fig.UserData.elements = []; % drop elements from array
+    end
+
+    function analyze(~, ~)
+
     end
 end
