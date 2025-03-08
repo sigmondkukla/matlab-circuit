@@ -36,33 +36,37 @@ function main_gui()
 
     controlPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.05 0.9 0.1]);
 
-    % Normal cursor mode button
+    %% Tools buttons
+    % cursor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Cursor', ...
         'Units', 'normalized', 'Position', [0.1 0 0.1 1], 'Callback', @set_cursor_mode);
 
-    % Toggle rotation button
+    % rotation button (TODO: don't call it toggle anymore as there are 4
+    % rotations possible)
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate', ...
         'Units', 'normalized', 'Position', [0.2 0 0.1 1], 'Callback', @toggle_rotation);
     
-    % Voltage source mode button
+    %% Element buttons
+    % voltage source button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Voltage Source', ...
         'Units', 'normalized', 'Position', [0.5 0 0.1 1], 'Callback', @set_voltage_mode);
     
-    % Resistor mode button
+    % resistor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Resistor', ...
         'Units', 'normalized', 'Position', [0.6 0 0.1 1], 'Callback', @set_resistor_mode);
     
-    % Wire mode button
+    % wire button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Wire', ...
         'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', @set_wire_mode);
 
+    % on mouse click on graph, neesd to handle all user intents
     function ax_click(~, ~)
-        % Get mouse position and snap to grid.
+        % get mouse position, snapped to grid
         pt = get(ax, 'CurrentPoint');
         x = pt(1,1); y = pt(1,2);
         [x, y] = snap_to_grid(x, y);
         
-        % Ensure mode and rotation exist.
+        % ensure that current mouse mode and element rotation are available
         if ~isfield(fig.UserData, 'mode')
             fig.UserData.mode = 'cursor';
         end
@@ -72,34 +76,42 @@ function main_gui()
         mode = fig.UserData.mode;
         direction = fig.UserData.rotation;
         
-        % Initialize element storage if needed.
+        % if no elements have been created yet, the elements global wont
+        % exist yet. thus create it before trying to add any elements
         if ~isfield(fig.UserData, 'elements')
             fig.UserData.elements = {};
         end
         
         switch mode
             case 'voltage'
-                % Create a new VoltageSource and draw it.
-                vs = VoltageSource([x y], direction);
-                vs.draw(ax);
-                fig.UserData.elements{end+1} = vs;
+                vs = VoltageSource([x y], direction); % Create a new VoltageSource object w/ current click pos and orientation
+                vs.draw(ax); % draw voltage source
+                fig.UserData.elements{end+1} = vs; % add to known elements
             case 'resistor'
-                rElem = Resistor([x y], direction);
-                rElem.draw(ax);
-                fig.UserData.elements{end+1} = rElem;
+                r = Resistor([x y], direction); % see voltage source above
+                r.draw(ax);
+                fig.UserData.elements{end+1} = r;
             case 'wire'
-                % For wires, use two clicks to define endpoints.
-                if ~isfield(fig.UserData, 'wireStart')
-                    fig.UserData.wireStart = [x y];
-                else
-                    w = Wire(fig.UserData.wireStart, [x y]);
-                    w.draw(ax);
+                % wires are special cases because they need state. it takes
+                % two clicks to set the start and end point, but we don't
+                % necessarily know if we're clicking the first or second
+                % point
+                if ~isfield(fig.UserData, 'wireStart') % if no wire positions have been entered
+                    fig.UserData.wireStart = [x y]; % store the first wire endpoint (now we know it halfway exists)
+                else % now the first wire position already exists, so this is the second
+                    w = Wire(fig.UserData.wireStart, [x y]); % init wire with prev click and current click as endpoints
+                    w.draw(ax); % draw duh
                     fig.UserData.elements{end+1} = w;
-                    fig.UserData = rmfield(fig.UserData, 'wireStart'); % Reset for next wire.
+                    fig.UserData = rmfield(fig.UserData, 'wireStart'); % get rid of wire start for the next time
+                    % TODO: could be issue with clicking out of wire editor
+                    % when a wire has not fully been created. i.e. first
+                    % point clicked but not second. fix by resetting this
+                    % whenever tool switches to something other than wire.
+                    % TODO: can we make the tool switching functions all
+                    % into one function with an argument for the tool?
                 end
             case 'cursor'
-                % In cursor mode, do nothing.
-                return;
+                return; % do nothing
         end
     end
 
