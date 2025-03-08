@@ -39,7 +39,7 @@ function main_gui()
     %% Tools buttons
     % cursor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Cursor', ...
-        'Units', 'normalized', 'Position', [0.1 0 0.1 1], 'Callback', @set_cursor_mode);
+        'Units', 'normalized', 'Position', [0.1 0 0.1 1], 'Callback', {@set_mode,'cursor'});
 
     % rotation button (TODO: don't call it toggle anymore as there are 4
     % rotations possible)
@@ -49,15 +49,15 @@ function main_gui()
     %% Element buttons
     % voltage source button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Voltage Source', ...
-        'Units', 'normalized', 'Position', [0.5 0 0.1 1], 'Callback', @set_voltage_mode);
+        'Units', 'normalized', 'Position', [0.5 0 0.1 1], 'Callback', {@set_mode,'voltage'});
     
     % resistor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Resistor', ...
-        'Units', 'normalized', 'Position', [0.6 0 0.1 1], 'Callback', @set_resistor_mode);
+        'Units', 'normalized', 'Position', [0.6 0 0.1 1], 'Callback', {@set_mode,'resistor'});
     
     % wire button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Wire', ...
-        'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', @set_wire_mode);
+        'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', {@set_mode,'wire'});
 
     % on mouse click on graph, neesd to handle all user intents
     function ax_click(~, ~)
@@ -134,20 +134,8 @@ function main_gui()
         end
     end
 
-    function set_cursor_mode(~, ~)
-        fig.UserData.mode = 'cursor';
-    end
-    
-    function set_voltage_mode(~, ~)
-        fig.UserData.mode = 'voltage';
-    end
-    
-    function set_resistor_mode(~, ~)
-        fig.UserData.mode = 'resistor';
-    end
-
-    function set_wire_mode(~, ~)
-        fig.UserData.mode = 'wire';
+    function set_mode(~, ~, mode)
+        fig.UserData.mode = mode;
     end
 
     % cycle thru rotation options when rotate clicked
