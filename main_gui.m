@@ -1,6 +1,6 @@
 function main_gui()
     clc;
-    clear; %#ok because this only runs at the beginning
+    clear; %#ok because it only runs once
     close all;
 
     fig = figure('Position', [100 100 800 600]); % figure window must be larger
@@ -37,14 +37,21 @@ function main_gui()
     controlPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.05 0.9 0.1]);
 
     %% Tools buttons
+    % clear button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Clear', ...
+        'Units', 'normalized', 'Position', [0 0 0.1 1], 'Callback', @clear_elements);
+
     % cursor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Cursor', ...
         'Units', 'normalized', 'Position', [0.1 0 0.1 1], 'Callback', {@set_mode,'cursor'});
 
-    % rotation button (TODO: don't call it toggle anymore as there are 4
-    % rotations possible)
-    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate', ...
-        'Units', 'normalized', 'Position', [0.2 0 0.1 1], 'Callback', @toggle_rotation);
+    % rotate CW button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate CW', ...
+        'Units', 'normalized', 'Position', [0.2 0 0.1 1], 'Callback', {@change_rotation, 'cw'});
+
+    % rotate CCW button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate CCW', ...
+        'Units', 'normalized', 'Position', [0.3 0 0.1 1], 'Callback', {@change_rotation, 'ccw'});
     
     %% Element buttons
     % voltage source button
@@ -133,23 +140,30 @@ function main_gui()
         fig.UserData.mode = mode;
 
         if ~strcmp(mode, 'wire') % if not wire, clear the wire start point b/c tool exited
-            fig.UserData = rmfield(fig.UserData, 'wireStart');
+            if isfield(fig.UserData, 'wireStart') % only delete if it exists
+                fig.UserData = rmfield(fig.UserData, 'wireStart');
+            end
         end
     end
 
-    % cycle thru rotation options when rotate clicked
-    function toggle_rotation(~, ~)
-        switch fig.UserData.rotation % move to next rotation based on current rotation
-            case 'right'
-                fig.UserData.rotation = 'down'; % down is clockwise of right
-            case 'down'
-                fig.UserData.rotation = 'left'; % etc
-            case 'left'
-                fig.UserData.rotation = 'up';
-            case 'up'
-                fig.UserData.rotation = 'right';
-            otherwise % rotation was undefined, start with right
-                fig.UserData.rotation = 'right';
+    % edit the current rotation based on dir
+    function change_rotation(~, ~, dir) % support 'cw' or 'ccw' rotation now
+        rotations = ['right','down','left','up'];
+        index = find(fig.UserData.rotation);
+        switch dir
+            case 'cw'
+                index = mod(index, 4) + 1;
+            case 'ccw'
+                index = mod(index - 2, 4) + 1;
         end
+        fig.UserData.rotation = rotations(index);
+    end
+
+    % delete everything off the schematic
+    function clear_elements(~, ~)
+        for i = 1 : length(fig.UserData.elements) % loop thru all elements
+            fig.UserData.elements{i}.undraw(); % remove from plot
+        end
+        fig.UserData.elements = []; % drop elements from array
     end
 end
