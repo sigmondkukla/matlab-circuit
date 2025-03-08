@@ -164,6 +164,5 @@ function main_gui()
             otherwise % rotation was undefined, start with right
                 fig.UserData.rotation = 'right';
         end
-end
-
+    end
 end
