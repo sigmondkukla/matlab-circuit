@@ -23,5 +23,10 @@ classdef Element < handle
         function draw(~, ~)
             error("Element draw must be overridden in children");
         end
+
+        function undraw(obj, ~)
+            disp(obj.Handles)
+            delete(obj.Handles);
+        end
     end
 end
