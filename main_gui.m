@@ -103,12 +103,6 @@ function main_gui()
                     w.draw(ax); % draw duh
                     fig.UserData.elements{end+1} = w;
                     fig.UserData = rmfield(fig.UserData, 'wireStart'); % get rid of wire start for the next time
-                    % TODO: could be issue with clicking out of wire editor
-                    % when a wire has not fully been created. i.e. first
-                    % point clicked but not second. fix by resetting this
-                    % whenever tool switches to something other than wire.
-                    % TODO: can we make the tool switching functions all
-                    % into one function with an argument for the tool?
                 end
             case 'cursor'
                 return; % do nothing
@@ -133,9 +127,14 @@ function main_gui()
             set(h_crosshair, 'XData', xl, 'YData', [y y], 'Visible', 'on');
         end
     end
-
+    
+    % changes what a click does
     function set_mode(~, ~, mode)
         fig.UserData.mode = mode;
+
+        if ~strcmp(mode, 'wire') % if not wire, clear the wire start point b/c tool exited
+            fig.UserData = rmfield(fig.UserData, 'wireStart');
+        end
     end
 
     % cycle thru rotation options when rotate clicked
