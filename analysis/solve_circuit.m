@@ -34,18 +34,18 @@ function solution = solve_circuit(circuit)
             R = resistor.value;
             
             if n1 ~= 1 % if the first node is not ground
-                idx1 = node_index(n1, n_nodes); % get offset index for matrix
+                idx1 = node_index(n1); % get offset index for matrix
                 A(idx1, idx1) = A(idx1, idx1) + (1/R); % insert 1/R for future use
                 if n2 ~= 1 % if node 2 is not gnd
-                    idx2 = node_index(n2, n_nodes);
+                    idx2 = node_index(n2);
                     A(idx1, idx2) = A(idx1, idx2) - (1/R); % subtract 1-R bc its the negative side
                 end
             end
             if n2 ~= 1 % if the second node is not gnd, do the same thing
-                idx2 = node_index(n2, n_nodes);
+                idx2 = node_index(n2);
                 A(idx2, idx2) = A(idx2, idx2) + (1/R);
                 if n1 ~= 1
-                    idx1 = node_index(n1, n_nodes);
+                    idx1 = node_index(n1);
                     A(idx2, idx1) = A(idx2, idx1) - (1/R);
                 end
             end
@@ -72,11 +72,11 @@ function solution = solve_circuit(circuit)
             
             % insert voltage source equation
             if n1 ~= 1 % if n1 not ground
-                idx1 = node_index(n1, n_nodes);
+                idx1 = node_index(n1);
                 A(row, idx1) = 1; % add +1 voltage source coefficient
             end
             if n2 ~= 1 % if n2 is not ground
-                idx2 = node_index(n2, n_nodes);
+                idx2 = node_index(n2);
                 A(row, idx2) = -1; % add -1 coefficient
             end
             b(row) = circuit.netlist(k).value; % set RHS vector to this voltage source
@@ -85,11 +85,11 @@ function solution = solve_circuit(circuit)
             % into the KCL at n1 and n2
             col = (n_nodes - 1) + voltage_counter; % and it is shifted over same as for row of node
             if n1 ~= 1 % if n1 isn't grounded
-                idx1 = node_index(n1, n_nodes);
+                idx1 = node_index(n1);
                 A(idx1, col) = A(idx1, col) + 1; % add coeff for current exiting n1
             end
             if n2 ~= 1 % if n2 isn't grounded
-                idx2 = node_index(n2, n_nodes);
+                idx2 = node_index(n2);
                 A(idx2, col) = A(idx2, col) - 1; % coeff for current entering n2
             end
         end
