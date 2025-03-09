@@ -179,6 +179,10 @@ function main_gui()
     end
 
     function analyze(~, ~)
+        if ~isfield(fig.UserData, "elements") || isempty(fig.UserData.elements)
+            error("No elements added to analyze")
+        end
+
         circuit = get_circuit(fig.UserData.elements);
         debug_circuit(circuit);
     end

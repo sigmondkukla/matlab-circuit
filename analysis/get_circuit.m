@@ -19,4 +19,6 @@ function circuit = get_circuit(elements)
 
     circuit.nodes = uniqueNodes;
     circuit.netlist = netlist;
+
+    circuit = simplify_nodes(circuit); % convert to electrical nodes
 end
