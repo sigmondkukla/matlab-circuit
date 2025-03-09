@@ -4,7 +4,7 @@ function debug_circuit(circuit)
     % nodes is Nx2 where N is the number of uniqe nodes.
     % each row is then an [x,y] coordinate of the node
 
-    n_nodes = length(circuit.nodes(:,1));
+    n_nodes = size(circuit.nodes, 1);
     disp("Circuit has " + n_nodes + " nodes");
     for i=1:n_nodes
         disp("Node " + i + " at (" + circuit.nodes(i,1) + "," + circuit.nodes(i,2) + ")")
@@ -16,7 +16,7 @@ function debug_circuit(circuit)
 
     %disp(circuit.netlist);
 
-    n_elements = length(circuit.netlist);
+    n_elements = size(circuit.netlist, 2);
     
     disp("Circuit has " + n_elements + " elements");
 
