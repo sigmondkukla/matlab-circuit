@@ -185,5 +185,7 @@ function main_gui()
 
         circuit = get_circuit(fig.UserData.elements);
         debug_circuit(circuit);
+        solution = solve_circuit(circuit);
+        debug_solution(solution);
     end
 end
