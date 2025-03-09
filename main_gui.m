@@ -179,6 +179,7 @@ function main_gui()
     end
 
     function analyze(~, ~)
-
+        circuit = get_circuit(fig.UserData.elements);
+        debug_circuit(circuit);
     end
 end
