@@ -182,7 +182,7 @@ function main_gui()
         end
         fig.UserData.elements = []; % drop elements from array
 
-        clear_annotations(); % clear analysis result annotations
+        clear_annotations(fig); % clear analysis result annotations
     end
 
     function analyze(~, ~)
