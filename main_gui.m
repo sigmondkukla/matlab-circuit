@@ -3,6 +3,11 @@ function main_gui()
     clear; %#ok because it only runs once
     close all;
 
+    % subfolders
+    addpath("analysis");
+    addpath("classes");
+    addpath("utils");
+
     fig = figure('Position', [100 100 800 600]); % figure window must be larger
 
     fig.UserData.mode = 'cursor';
