@@ -3,6 +3,11 @@ function main_gui()
     clear; %#ok because it only runs once
     close all;
 
+    % subfolders
+    addpath("analysis");
+    addpath("classes");
+    addpath("utils");
+
     fig = figure('Position', [100 100 800 600]); % figure window must be larger
 
     fig.UserData.mode = 'cursor';
@@ -176,16 +181,20 @@ function main_gui()
             fig.UserData.elements{i}.undraw(); % remove from plot
         end
         fig.UserData.elements = []; % drop elements from array
+
+        clear_annotations(fig); % clear analysis result annotations
     end
 
     function analyze(~, ~)
+        % don't do anything if there's nothing to analyze
         if ~isfield(fig.UserData, "elements") || isempty(fig.UserData.elements)
             error("No elements added to analyze")
         end
 
-        circuit = get_circuit(fig.UserData.elements);
-        debug_circuit(circuit);
-        solution = solve_circuit(circuit);
-        debug_solution(solution);
+        circuit = get_circuit(fig.UserData.elements); % convert schematic to netlist
+        debug_circuit(circuit); % debug netlist onto command window
+        solution = solve_circuit(circuit); % nodal analysis
+        debug_solution(solution); % debug results onto command window
+        annotate_circuit(fig, ax, circuit, solution); % display results on graph
     end
 end
