@@ -71,6 +71,10 @@ function main_gui()
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Wire', ...
         'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', {@set_mode,'wire'});
 
+    % ground button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Ground', ...
+        'Units', 'normalized', 'Position', [0.8 0 0.1 1], 'Callback', {@set_mode,'ground'});
+
     % analyze button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Analyze', ...
         'Units', 'normalized', 'Position', [0.9 0 0.1 1], 'Callback', @analyze);
@@ -120,6 +124,10 @@ function main_gui()
                     fig.UserData.elements{end+1} = w;
                     fig.UserData = rmfield(fig.UserData, 'wireStart'); % get rid of wire start for the next time
                 end
+            case 'ground'
+                gnd = Ground([x y]);
+                gnd.draw(ax);
+                fig.UserData.elements{end+1} = gnd;
             case 'cursor'
                 return; % do nothing
         end
