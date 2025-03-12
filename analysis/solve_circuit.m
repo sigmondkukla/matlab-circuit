@@ -109,6 +109,15 @@ function solution = solve_circuit(circuit)
     V(2:end) = x(1:(n_nodes-1)); % map the solved voltages in as describe above
     
     I_voltage = x(n_nodes:end); % get currents thru voltage sources
+
+    % handle ground
+    ground_indices = find(arrayfun(@(x) strcmpi(x.type, 'ground'), circuit.netlist), 1, 'first'); % find ground element in netlist
+    if ~isempty(ground_indices) % if there is one
+        ground_node = circuit.netlist(ground_indices).pinNodes(1); % find the node it is attached to
+        offset = V(ground_node); % get its voltage there
+        V = V - offset; % offset all other voltages so this one is 0V
+    end
+
     
     % put into solution structure
     solution.V = V;
