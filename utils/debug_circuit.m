@@ -27,8 +27,7 @@ function debug_circuit(circuit)
             circuit.netlist(i).pinNodes(1) + " and " + circuit.netlist(i).pinNodes(2))
         else
             disp("Element " + i + " is a " + circuit.netlist(i).type + " with value " ...
-                + circuit.netlist(i).value + " and connects to nodes " + ...
-                circuit.netlist(i).pinNodes(1) + " and " + circuit.netlist(i).pinNodes(2)) % TODO: doesn't debug elements w/ >2 pins
+                + circuit.netlist(i).value + " and connects to nodes " + circuit.netlist(i).pinNodes)
         end
     end
 end
