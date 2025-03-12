@@ -23,11 +23,14 @@ function debug_circuit(circuit)
     for i=1:n_elements
         element = circuit.netlist(i);
         if strcmp(element.type, "wire") % value have isempty = 1 because it is a [] for a wire
-            disp("Element " + i + " is a wire connecting nodes " + ...
-            circuit.netlist(i).pinNodes(1) + " and " + circuit.netlist(i).pinNodes(2))
+            % disp("Element " + i + " is a wire connecting nodes " + ...
+            % circuit.netlist(i).pinNodes(1) + " and " + circuit.netlist(i).pinNodes(2));
+
+            % do nothing, we don't care about wires anymore
         else
             disp("Element " + i + " is a " + circuit.netlist(i).type + " with value " ...
-                + circuit.netlist(i).value + " and connects to nodes " + circuit.netlist(i).pinNodes)
+                + circuit.netlist(i).value + " and connects to nodes");
+            disp(circuit.netlist(i).pinNodes);
         end
     end
 end
