@@ -32,6 +32,12 @@ classdef VoltageSource < Element
                     obj.PinPositions = [[x1_start, y]; [x2_end, y]]; % pin 1 +, pin 2 -
                     hConn1 = line(ax, [x1_start, x1_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x2_start, x2_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
+
+                    % label polarity
+                    hPlus = text(ax, x-(r/2), y, '+', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
+                    hMinus = text(ax, x+(r/2), y, '-', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
                 case 'left'
                     % right connection becomes pin1, left is pin2.
                     x1_start = x + r + conn_len; x1_end = x + r;
@@ -39,6 +45,12 @@ classdef VoltageSource < Element
                     obj.PinPositions = [[x1_start, y]; [x2_end, y]];
                     hConn1 = line(ax, [x1_start, x1_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x2_start, x2_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
+
+                    % label polarity
+                    hPlus = text(ax, x+(r/2), y, '+', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
+                    hMinus = text(ax, x-(r/2), y, '-', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
                 case 'up'
                     % bottom connection is pin1, top is pin2.
                     y1_start = y - r - conn_len; y1_end = y - r;
@@ -46,6 +58,12 @@ classdef VoltageSource < Element
                     obj.PinPositions = [[x, y1_start]; [x, y2_end]];
                     hConn1 = line(ax, [x, x], [y1_start, y1_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x, x], [y2_start, y2_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
+
+                    % label polarity
+                    hPlus = text(ax, x, y-(r/2), '+', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
+                    hMinus = text(ax, x, y+(r/2), '-', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
                 case 'down'
                     % top connection is pin1, bottom is pin2.
                     y1_start = y + r + conn_len; y1_end = y + r;
@@ -53,15 +71,15 @@ classdef VoltageSource < Element
                     obj.PinPositions = [[x, y1_start]; [x, y2_end]];
                     hConn1 = line(ax, [x, x], [y1_start, y1_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x, x], [y2_start, y2_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
+
+                    % label polarity
+                    hPlus = text(ax, x, y+(r/2), '+', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
+                    hMinus = text(ax, x, y-(r/2), '-', 'FontSize', 16, ...
+                        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off', 'FontWeight','bold', 'Color', 'r');
                 otherwise
                     error('Unknown orientation'); % bruh
             end
-            
-            % label polarity
-            hPlus = text(ax, obj.PinPositions(1,1), obj.PinPositions(1,2), '+', 'FontSize', 12, ...
-                'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off');
-            hMinus = text(ax, obj.PinPositions(2,1), obj.PinPositions(2,2), '-', 'FontSize', 12, ...
-                'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off');
             
             % label pin numbers
             hPin1 = text(ax, obj.PinPositions(1,1), obj.PinPositions(1,2)-0.3, '1', 'FontSize', 10, ...
