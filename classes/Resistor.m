@@ -17,6 +17,8 @@ classdef Resistor < Element
             x = obj.Position(1);
             y = obj.Position(2);
             conn_len = 0.5;
+
+            value_format = formatResistance(obj.Value);
             
             if any(strcmp(obj.Orientation, {'right', 'left'})) % use same rectangle for right/left orientation
                 w = 1; h = 0.5;
@@ -35,6 +37,11 @@ classdef Resistor < Element
                     hConn1 = line(ax, [x1_start, x1_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x2_start, x2_end], [y, y], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 end
+
+                % value label
+                hValue = text(ax, x, y - conn_len, value_format, 'FontSize', 12, 'Color', 'k', ...
+                'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off');
+
             else % orientation must be vertical TODO what if orientation is not properly defined
                 w = 0.5; h = 1; % for vertical orientations, swap the rectangle dimensions
                 hRect = rectangle(ax, 'Position', [x - w/2, y - h/2, w, h], ...
@@ -52,6 +59,10 @@ classdef Resistor < Element
                     hConn1 = line(ax, [x, x], [y1_start, y1_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                     hConn2 = line(ax, [x, x], [y2_start, y2_end], 'Color', 'k', 'LineWidth', 1, 'HitTest', 'off');
                 end
+
+                % value label
+                hValue = text(ax, x + conn_len, y, value_format, 'FontSize', 12, 'Color', 'k', ...
+                'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'HitTest', 'off');
             end
             
             % pin labels
@@ -59,7 +70,17 @@ classdef Resistor < Element
             hPin2 = text(ax, obj.PinPositions(2,1), obj.PinPositions(2,2)-0.3, '2', 'FontSize', 10, 'HorizontalAlignment', 'center', 'HitTest', 'off');
             
             % save graphics handles
-            obj.Handles = [hRect, hConn1, hConn2, hPin1, hPin2];
-        end
+            obj.Handles = [hRect, hConn1, hConn2, hPin1, hPin2, hValue];
+
+            function str = formatResistance(R)
+                if R < 1e3
+                    str = sprintf('%g Ω', R);
+                elseif R < 1e6
+                    str = sprintf('%g kΩ', R/1e3);
+                else
+                    str = sprintf('%g MΩ', R/1e6);
+                end
+            end
+        end       
     end
 end
