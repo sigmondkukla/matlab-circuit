@@ -51,6 +51,26 @@ function solution = solve_circuit(circuit)
             end
         end
     end
+
+    % add current sources to matrix
+    for k = 1:length(circuit.netlist) % for each element
+        if strcmpi(circuit.netlist(k).type, 'current') % if its a current source
+            current_source = circuit.netlist(k);
+            n1 = current_source.pinNodes(1);
+            n2 = current_source.pinNodes(2);
+            I_val = current_source.value; % [A]
+            
+            % For node n1: if not ground, add +I (current leaving node)
+            if n1 ~= 1 % add current out of the source + because using net I out
+                idx1 = node_index(n1);
+                b(idx1) = b(idx1) + I_val;
+            end
+            if n2 ~= 1 % add current into the source as -
+                idx2 = node_index(n2);
+                b(idx2) = b(idx2) - I_val;
+            end
+        end
+    end
     
     % voltage sources tell us that V(n1)-V(n2)=V_source
     % Also the current thru the source is an unknown

@@ -59,6 +59,10 @@ function main_gui()
         'Units', 'normalized', 'Position', [0.3 0 0.1 1], 'Callback', {@change_rotation, 'ccw'});
     
     %% Element buttons
+    % current source button
+    uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Current Source', ...
+        'Units', 'normalized', 'Position', [0.4 0 0.1 1], 'Callback', {@set_mode, 'current'});
+
     % voltage source button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Voltage Source', ...
         'Units', 'normalized', 'Position', [0.5 0 0.1 1], 'Callback', {@set_mode,'voltage'});
@@ -107,10 +111,12 @@ function main_gui()
                 vs = VoltageSource([x y], direction); % Create a new VoltageSource object w/ current click pos and orientation
                 vs.draw(ax); % draw voltage source
                 fig.UserData.elements{end+1} = vs; % add to known elements
+
             case 'resistor'
                 r = Resistor([x y], direction); % see voltage source above
                 r.draw(ax);
                 fig.UserData.elements{end+1} = r;
+
             case 'wire'
                 % wires are special cases because they need state. it takes
                 % two clicks to set the start and end point, but we don't
@@ -124,10 +130,17 @@ function main_gui()
                     fig.UserData.elements{end+1} = w;
                     fig.UserData = rmfield(fig.UserData, 'wireStart'); % get rid of wire start for the next time
                 end
+
             case 'ground'
                 gnd = Ground([x y]);
                 gnd.draw(ax);
                 fig.UserData.elements{end+1} = gnd;
+
+            case 'current'
+                cs = CurrentSource([x y], direction);
+                cs.draw(ax);
+                fig.UserData.elements{end+1} = cs;
+
             case 'cursor'
                 return; % do nothing
         end
