@@ -39,49 +39,49 @@ function main_gui()
     set(ax, 'ButtonDownFcn', @ax_click);
     set(fig, 'WindowButtonMotionFcn', @mouse_move);
 
-    controlPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.05 0.9 0.1]);
+    controlPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.05 0.9 0.2]);
 
     %% Tools buttons
     % clear button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Clear', ...
-        'Units', 'normalized', 'Position', [0 0 0.1 1], 'Callback', @clear_elements);
+        'Units', 'normalized', 'Position', [0 0.5 0.1 0.5], 'Callback', @clear_elements);
 
     % cursor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Cursor', ...
-        'Units', 'normalized', 'Position', [0.1 0 0.1 1], 'Callback', {@set_mode,'cursor'});
+        'Units', 'normalized', 'Position', [0.1 0.5 0.1 0.5], 'Callback', {@set_mode,'cursor'});
 
     % rotate CW button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate CW', ...
-        'Units', 'normalized', 'Position', [0.2 0 0.1 1], 'Callback', {@change_rotation, 'cw'});
+        'Units', 'normalized', 'Position', [0.2 0.5 0.1 0.5], 'Callback', {@change_rotation, 'cw'});
 
     % rotate CCW button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Rotate CCW', ...
-        'Units', 'normalized', 'Position', [0.3 0 0.1 1], 'Callback', {@change_rotation, 'ccw'});
+        'Units', 'normalized', 'Position', [0.3 0.5 0.1 0.5], 'Callback', {@change_rotation, 'ccw'});
     
     %% Element buttons
     % current source button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Current Source', ...
-        'Units', 'normalized', 'Position', [0.4 0 0.1 1], 'Callback', {@set_mode, 'current'});
+        'Units', 'normalized', 'Position', [0 0 0.2 0.5], 'Callback', {@set_mode, 'current'});
 
     % voltage source button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Voltage Source', ...
-        'Units', 'normalized', 'Position', [0.5 0 0.1 1], 'Callback', {@set_mode,'voltage'});
+        'Units', 'normalized', 'Position', [0.2 0 0.2 0.5], 'Callback', {@set_mode,'voltage'});
     
     % resistor button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Resistor', ...
-        'Units', 'normalized', 'Position', [0.6 0 0.1 1], 'Callback', {@set_mode,'resistor'});
+        'Units', 'normalized', 'Position', [0.4 0 0.2 0.5], 'Callback', {@set_mode,'resistor'});
     
     % wire button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Wire', ...
-        'Units', 'normalized', 'Position', [0.7 0 0.1 1], 'Callback', {@set_mode,'wire'});
+        'Units', 'normalized', 'Position', [0.6 0 0.2 0.5], 'Callback', {@set_mode,'wire'});
 
     % ground button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Ground', ...
-        'Units', 'normalized', 'Position', [0.8 0 0.1 1], 'Callback', {@set_mode,'ground'});
+        'Units', 'normalized', 'Position', [0.8 0 0.2 0.5], 'Callback', {@set_mode,'ground'});
 
     % analyze button
     uicontrol(controlPanel, 'Style', 'pushbutton', 'String', 'Analyze', ...
-        'Units', 'normalized', 'Position', [0.9 0 0.1 1], 'Callback', @analyze);
+        'Units', 'normalized', 'Position', [0.9 0.5 0.1 0.5], 'Callback', @analyze);
 
     % on mouse click on graph, neesd to handle all user intents
     function ax_click(~, ~)
