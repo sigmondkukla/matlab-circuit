@@ -141,7 +141,7 @@ function solution = solve_circuit(circuit)
     
     % put into solution structure
     solution.V = V;
-    solution.I_voltage = I_voltage;
+    solution.I_voltage = -I_voltage; % negative so it works clockwise
 
     % return
     
