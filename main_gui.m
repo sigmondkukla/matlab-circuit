@@ -14,7 +14,7 @@ function main_gui()
     fig.UserData.rotation = 'right';
 
     % top panel for plot
-    plotPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.25 0.9 0.7]);
+    plotPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.25 0.6 0.7], 'Title', 'Schematic Capture');
 
     ax = axes('Parent', plotPanel); % axes for the plot
     hold(ax, 'on');
@@ -38,6 +38,9 @@ function main_gui()
     % callbacks for mouse click and move
     set(ax, 'ButtonDownFcn', @ax_click);
     set(fig, 'WindowButtonMotionFcn', @mouse_move);
+
+    resultsPanel = uipanel(fig, 'Units','normalized', 'Position', [0.65 0.25 0.3 0.7], 'Title', 'Results');
+    resultsText = uicontrol('Style','text','String','Enter a schematic and click Analyze','parent',resultsPanel, 'Units','normalized', 'Position', [0.05 0.05 0.9 0.9], 'FontSize', 14);
 
     controlPanel = uipanel(fig, 'Units', 'normalized', 'Position', [0.05 0.05 0.9 0.2]);
 
@@ -217,5 +220,6 @@ function main_gui()
         solution = solve_circuit(circuit); % nodal analysis
         debug_solution(solution); % debug results onto command window
         annotate_circuit(fig, ax, circuit, solution); % display results on graph
+        display_results(resultsText, circuit, solution);
     end
 end
