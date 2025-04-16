@@ -207,6 +207,7 @@ function main_gui()
         fig.UserData.elements = []; % drop elements from array
 
         clear_annotations(fig); % clear analysis result annotations
+        set(resultsText,'String',"Enter a schematic and click Analyze") % clear results box
     end
 
     function analyze(~, ~)
