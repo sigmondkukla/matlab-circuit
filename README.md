@@ -5,8 +5,12 @@ Performs modified nodal analysis automatically based on an entered schematic dia
 
 ## Installation
 
+### Prerequisites
+- MATLAB R2024a installed on your computer
+
+### Running the software
 1. Extract the `matlab-circuit.zip` folder if it is not already.
-2. Open `main_gui.m` and run it.
+2. Open `main_gui.m` in MATLAB and run it.
 
 **Troubleshooting:** Ensure that the `analysis`, `classes`, and `utils` subdirectories are also added to the MATLAB path. This should, however, be handled automatically at the start of execution of `main_gui.m`.
 
